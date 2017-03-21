@@ -23,22 +23,19 @@ class UserController extends ActiveController
         return $rules;
     }
 
+    public function actionUserInfo(){
+        if (!Yii::$app->user->isGuest) {
+            return 'yes';
+        }
+
+        return 'no';
+    }
+
     /**
      * 登录既是授权
      * @return [type] [description]
      */
     public function actionLogin(){
-    	//  如果应用有状态的情况下会起作用例如使用postman第一次登录成功后，再次登录就会执行这边，但是前提是配置中要做如下配置
-    	//  'user' => [
-        //     'identityClass' => 'backend\models\User',
-        //     'enableAutoLogin' => true,
-        //     'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-        // ],
-        // 在有状态的情况下，它会通过api传一个cookie信息，name值为_identity-backend。后台获取到这个cookie就认为处于登录状态所以就访问这里了。
-    	if (!Yii::$app->user->isGuest) {
-            return 'yes';
-        }
-
         $model = new LoginForm();
         $postData = Yii::$app->request->post();
         if ($model->load(['LoginForm'=>$postData]) && $model->login()) {
