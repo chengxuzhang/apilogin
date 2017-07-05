@@ -3,12 +3,11 @@
 namespace backend\controllers;
 
 use Yii;
-use yii\rest\ActiveController;
 use yii\filters\auth\QueryParamAuth;
 use backend\models\LoginForm;
 use yii\filters\AccessControl;
 
-class UserController extends ActiveController
+class UserController extends \backend\components\BaseActiveController
 {
     public $modelClass = 'backend\models\User';
 
@@ -40,8 +39,8 @@ class UserController extends ActiveController
         $postData = Yii::$app->request->post();
         if ($model->load(['LoginForm'=>$postData]) && $model->login()) {
         	$token = md5(Yii::$app->security->generateRandomString());
-            Yii::$app->cache->set($token, $postData['username'], 60); // 设置token值为username
-            return ['token'=>$token];
+            Yii::$app->cache->set($token, $postData['username'], 3600); // 设置token值为username
+            return ['status'=>200,'message'=>'ok','data'=>['token'=>$token]];
         }
 
         return 'login no';

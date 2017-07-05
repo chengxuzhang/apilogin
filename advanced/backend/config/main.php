@@ -35,6 +35,19 @@ return [
                 ],
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                        'app/error' => 'error.php',
+                        'app/message' => 'message.php',
+                        'app/lable' => 'lable.php',
+                    ],
+                ],
+            ],
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -51,8 +64,15 @@ return [
                         'POST login' => 'login',
                     ],
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'document',
+                    'extraPatterns' => [
+                    ],
+                ],
             ],
         ],
     ],
+    'language' =>'zh-CN',  //增加此行，默认使用中文
     'params' => $params,
 ];
