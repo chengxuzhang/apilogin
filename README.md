@@ -22,7 +22,7 @@ class User extends ActiveRecord implements IdentityInterface, RateLimitInterface
 
 ```
 public function behaviors(){
-	    $behaviors = parent::behaviors();
+        $behaviors = parent::behaviors();
         
         $behaviors['rateLimiter'] = [
             'class' => RateLimiter::className(),
@@ -35,7 +35,7 @@ public function behaviors(){
 
         $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON;
         return $behaviors;
-	}
+    }
 ```
 
 backend/models/User.php 中加入如下代码
@@ -61,4 +61,63 @@ backend/models/User.php 中加入如下代码
         $this->save();
     }
 ```
+
+##### 4.格式化响应
+
+本示例进行了格式化输出如下图
+
+![image](https://raw.githubusercontent.com/chengxuzhang/apilogin/master/login.png)
+
+包括三个部分 status 状态 ， message 提示 ， data 数据
+
+在控制器中配置属性
+
+```
+public $serializer = [
+        'class' => 'backend\components\BaseSerializer',
+        'collectionEnvelope' => 'datas',
+        'linksEnvelope'=>NULL,//设置不要links
+        'metaEnvelope'=>NULL,//设置不要 metaEnvelope 
+    ];
+```
+重写了 yii\rest\Serializer 类 使backend\components\BaseSerializer继承yii\rest\Serializer
+
+##### 5.扩展字段使用方式
+
+如下图所示
+
+![image](https://raw.githubusercontent.com/chengxuzhang/apilogin/master/expand.png)
+
+参数 expand 可以调用关联表的信息
+
+Document 模型中的代码
+
+```
+/**
+     * 获取用户信息
+     * @return [type] [description]
+     */
+    public function getUserinfo()
+    {
+        return $this->hasOne(User::className(),['id'=>'uid']);
+    }
+
+    public function extraFields(){
+        return ['userinfo'];
+    }
+```
+
+###### 6.字段过滤
+
+Document模型中加入
+
+```
+public function fields(){
+        $fields = parent::fields();
+        // 删除一些包含敏感信息的字段
+        unset($fields['category_id'], $fields['description'], $fields['root'], $fields['pid'], $fields['model_id'], $fields['link_id'], $fields['cover_id'], $fields['display'], $fields['view'], $fields['create_time'], $fields['update_time']);
+        return $fields;
+    }
+```
+
 
