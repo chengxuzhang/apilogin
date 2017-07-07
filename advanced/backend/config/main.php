@@ -6,12 +6,19 @@ $params = array_merge(
     require(__DIR__ . '/params-local.php')
 );
 
+$rules = require(__DIR__ . '/rules.php');
+
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'v1' => [
+            'class'=>'backend\modules\v1\Module',
+            'basePath' => '@backend/modules/v1',
+        ]
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
@@ -55,22 +62,7 @@ return [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
-            'rules' => [
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'user',
-                    'extraPatterns' => [
-                        'GET userInfo' => 'user-info',
-                        'POST login' => 'login',
-                    ],
-                ],
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => 'document',
-                    'extraPatterns' => [
-                    ],
-                ],
-            ],
+            'rules' => $rules,
         ],
     ],
     'language' =>'zh-CN',  //增加此行，默认使用中文

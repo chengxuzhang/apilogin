@@ -61,4 +61,24 @@ class Document extends \backend\components\BaseActiveRecord
             'status' => 'Status',
         ];
     }
+
+    public function fields(){
+        $fields = parent::fields();
+        // 删除一些包含敏感信息的字段
+        unset($fields['category_id'], $fields['description'], $fields['root'], $fields['pid'], $fields['model_id'], $fields['link_id'], $fields['cover_id'], $fields['display'], $fields['view'], $fields['create_time'], $fields['update_time']);
+        return $fields;
+    }
+
+    /**
+     * 获取用户信息
+     * @return [type] [description]
+     */
+    public function getUserinfo()
+    {
+        return $this->hasOne(User::className(),['id'=>'uid']);
+    }
+
+    public function extraFields(){
+        return ['userinfo'];
+    }
 }
